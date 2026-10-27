@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2a55c9">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght,SOFT@9..144,300..600,0..100&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Clima</title>
+</head>
+<body>
+    <!-- Aviso de erro (o JS controla o display) -->
+    <div class="divErroInput" style="display: none;" role="alert">
+        <p class="textoErroInput"></p>
+    </div>
+ 
+    <!-- Céu decorativo -->
+    <div class="ceu" aria-hidden="true">
+        <div class="sol"></div>
+        <span class="nuvem n1"></span>
+        <span class="nuvem n2"></span>
+        <span class="nuvem n3"></span>
+    </div>
+ 
+    <main class="divPrincipal">
+        <h1 class="titulo">Previsão do Tempo</h1>
+ 
+        <div class="busca">
+            <div class="campoBusca">
+                <input type="text" placeholder="Digite o nome da cidade" class="inputCidade" aria-label="Nome da cidade" autocomplete="off">
+                <button class="buscarCidade">Procurar cidade</button>
+            </div>
+            <div class="listaCidades"></div>
+        </div>
+ 
+        <section class="resultado">
+            <h2 class="nomeCidade"></h2>
+ 
+            <div class="agora">
+                <span class="graus">--</span>
+                <span class="temperatura">temperatura agora</span>
+            </div>
+ 
+            <div class="detalhes">
+                <div class="detalhe d-max">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                    <span class="maxima">--</span>
+                    <span class="maximaTexto">Máxima</span>
+                </div>
+                <div class="detalhe d-min">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+                    <span class="minima">--</span>
+                    <span class="minimaTexto">Mínima</span>
+                </div>
+                <div class="detalhe d-umi">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 6.2 6 10.5A6 6 0 0 1 6 13.5C6 9.2 12 3 12 3z"/></svg>
+                    <span class="umidade">--</span>
+                    <span class="umidadeTexto">Umidade</span>
+                </div>
+                <div class="detalhe d-chu">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M16 14v6M8 14v6M12 16v6"/></svg>
+                    <span class="chanceChuva">--</span>
+                    <span class="chanceChuvaTexto">Chance de chuva</span>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
+ 

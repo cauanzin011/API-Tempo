@@ -1,0 +1,507 @@
+:root {
+    --ceu-alto: #2a55c9;
+    --ceu-meio: #5c93e6;
+    --ceu-baixo: #a9d2f5;
+    --horizonte: #ffddb0;
+    --sol: #ffc247;
+    --tinta: #0e1b3d;
+    --tinta-suave: #4a5679;
+    --azul: #2a55c9;
+    --coral: #e8602c;
+    --vidro: rgba(255, 255, 255, 0.74);
+    --fonte-titulo: "Fraunces", Georgia, serif;
+    --fonte-texto: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+ 
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+ 
+body {
+    font-family: var(--fonte-texto);
+    color: var(--tinta);
+    background: linear-gradient(180deg, var(--ceu-alto) 0%, var(--ceu-meio) 38%, var(--ceu-baixo) 68%, var(--horizonte) 100%);
+    background-attachment: fixed;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+}
+ 
+/* ---------- Céu decorativo ---------- */
+.ceu {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+ 
+.sol {
+    position: absolute;
+    top: 8%;
+    right: 10%;
+    width: clamp(160px, 24vw, 280px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff3c4 0%, var(--sol) 52%, rgba(255, 194, 71, 0) 71%);
+    animation:
+        nascer 2.6s cubic-bezier(0.2, 0.7, 0.2, 1) both,
+        flutuar 9s ease-in-out 2.6s infinite alternate;
+}
+ 
+.nuvem {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    filter: blur(1.5px);
+    animation: derivar linear infinite;
+}
+ 
+.nuvem::before,
+.nuvem::after {
+    content: "";
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+}
+ 
+.nuvem::before { width: 50%; height: 170%; left: 14%; top: -75%; }
+.nuvem::after  { width: 38%; height: 135%; right: 14%; top: -50%; }
+ 
+.n1 { width: 220px; height: 56px; top: 16%; left: 10%; animation-duration: 90s; animation-delay: -30s; }
+.n2 { width: 300px; height: 76px; top: 56%; left: 40%; animation-duration: 130s; animation-delay: -70s; opacity: 0.8; }
+.n3 { width: 160px; height: 44px; top: 80%; left: 20%; animation-duration: 105s; animation-delay: -10s; opacity: 0.7; }
+ 
+/* ---------- Cartão principal ---------- */
+.divPrincipal {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 520px);
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+    background: var(--vidro);
+    -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    backdrop-filter: blur(18px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 32px;
+    box-shadow: 0 40px 70px -28px rgba(14, 27, 61, 0.45);
+    animation: subir 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s both;
+}
+ 
+.titulo {
+    font-family: var(--fonte-titulo);
+    font-variation-settings: "SOFT" 100, "opsz" 36;
+    font-weight: 500;
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.25rem;
+}
+ 
+/* ---------- Busca ---------- */
+.busca {
+    position: relative;
+    z-index: 5;
+}
+ 
+.campoBusca {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+ 
+.inputCidade {
+    flex: 1 1 200px;
+    min-width: 0;
+    padding: 0.8rem 1.15rem;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--tinta);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid rgba(14, 27, 61, 0.14);
+    border-radius: 999px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+ 
+.inputCidade::placeholder {
+    color: var(--tinta-suave);
+    opacity: 0.75;
+}
+ 
+.inputCidade:focus {
+    border-color: var(--azul);
+    box-shadow: 0 0 0 4px rgba(42, 85, 201, 0.2);
+}
+ 
+.buscarCidade {
+    flex: 0 0 auto;
+    padding: 0.8rem 1.4rem;
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    background: var(--tinta);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+ 
+.buscarCidade:hover {
+    background: var(--azul);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -8px rgba(42, 85, 201, 0.7);
+}
+ 
+.buscarCidade:active {
+    transform: translateY(0) scale(0.96);
+}
+ 
+.buscarCidade:focus-visible,
+.listaCidades button:focus-visible {
+    outline: 3px solid var(--azul);
+    outline-offset: 2px;
+}
+ 
+/* Lista de cidades (o JS alterna display e preenche os botões) */
+.listaCidades {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 24px 50px -16px rgba(14, 27, 61, 0.45);
+    transform-origin: top center;
+    animation: abrir 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+ 
+.listaCidades button {
+    display: block;
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    font: inherit;
+    font-size: 0.95rem;
+    text-align: left;
+    color: var(--tinta);
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(14, 27, 61, 0.07);
+    cursor: pointer;
+    transition: background 0.15s, padding-left 0.2s;
+    animation: entrarItem 0.35s ease-out both;
+}
+ 
+.listaCidades button:last-child { border-bottom: none; }
+.listaCidades button:nth-child(2) { animation-delay: 0.05s; }
+.listaCidades button:nth-child(3) { animation-delay: 0.1s; }
+.listaCidades button:nth-child(4) { animation-delay: 0.15s; }
+.listaCidades button:nth-child(5) { animation-delay: 0.2s; }
+ 
+.listaCidades button:hover,
+.listaCidades button:focus-visible {
+    background: rgba(42, 85, 201, 0.09);
+    padding-left: 1.6rem;
+}
+ 
+/* ---------- Resultado ---------- */
+.resultado {
+    margin-top: 1.75rem;
+}
+ 
+.nomeCidade {
+    font-family: var(--fonte-titulo);
+    font-variation-settings: "SOFT" 100, "opsz" 72;
+    font-weight: 500;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+}
+ 
+.nomeCidade:empty::before {
+    content: "Busque uma cidade";
+    color: var(--tinta-suave);
+    opacity: 0.7;
+}
+ 
+.agora {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem 0 1.5rem;
+}
+ 
+.graus {
+    font-family: var(--fonte-titulo);
+    font-variation-settings: "SOFT" 100, "opsz" 144;
+    font-weight: 300;
+    font-size: clamp(3.8rem, 15vw, 6.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+}
+ 
+.temperatura {
+    margin-top: 0.35rem;
+    font-size: 0.95rem;
+    color: var(--tinta-suave);
+}
+ 
+/* ---------- Detalhes ---------- */
+.detalhes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+ 
+.detalhe {
+    --cor: var(--azul);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.8rem;
+    align-items: center;
+    padding: 0.9rem 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(14, 27, 61, 0.06);
+    border-radius: 20px;
+    animation: subir 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: 1.1s;
+}
+ 
+.detalhe:nth-child(2) { animation-delay: 1.2s; }
+.detalhe:nth-child(3) { animation-delay: 1.3s; }
+.detalhe:nth-child(4) { animation-delay: 1.4s; }
+ 
+.d-max { --cor: var(--coral); }
+.d-min { --cor: #2a6fd6; }
+.d-umi { --cor: #0f8aa6; }
+.d-chu { --cor: #5a4fc7; }
+ 
+.detalhe svg {
+    grid-row: 1 / span 2;
+    width: 40px;
+    height: 40px;
+    padding: 9px;
+    fill: none;
+    stroke: var(--cor);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    background: color-mix(in srgb, var(--cor) 13%, transparent);
+    border-radius: 14px;
+}
+ 
+.maxima, .minima, .umidade, .chanceChuva {
+    font-family: var(--fonte-titulo);
+    font-variation-settings: "SOFT" 100, "opsz" 36;
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 1.1;
+}
+ 
+.maximaTexto, .minimaTexto, .umidadeTexto, .chanceChuvaTexto {
+    font-size: 0.82rem;
+    color: var(--tinta-suave);
+}
+ 
+/* ---------- Aviso de erro ---------- */
+.divErroInput {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: max-content;
+    max-width: calc(100vw - 2rem);
+    padding: 0.8rem 1.3rem 0.8rem 1.1rem;
+    color: #fff;
+    background: var(--tinta);
+    border-radius: 999px;
+    box-shadow: 0 18px 40px -12px rgba(14, 27, 61, 0.6);
+    animation: avisar 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+ 
+.textoErroInput {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+ 
+.textoErroInput::before {
+    content: "";
+    flex: none;
+    width: 10px;
+    height: 10px;
+    background: var(--coral);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(232, 96, 44, 0.3);
+}
+ 
+/* ---------- Animações ---------- */
+@keyframes nascer {
+    from { transform: translateY(70vh) scale(0.8); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+ 
+@keyframes flutuar {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(-14px, 18px) scale(1.04); }
+}
+ 
+@keyframes derivar {
+    from { transform: translateX(-70vw); }
+    to   { transform: translateX(130vw); }
+}
+ 
+@keyframes subir {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+ 
+@keyframes abrir {
+    from { opacity: 0; transform: translateY(-8px) scaleY(0.92); }
+    to   { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+ 
+@keyframes entrarItem {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+ 
+@keyframes avisar {
+    from { opacity: 0; transform: translate(-50%, -24px) scale(0.9); }
+    to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+ 
+/* ---------- Cenário noturno (classe "noite" no body, via JS) ---------- */
+body.noite {
+    --ceu-alto: #070b24;
+    --ceu-meio: #141a4a;
+    --ceu-baixo: #2b2a70;
+    --horizonte: #6a4585;
+    --tinta: #eaf0ff;
+    --tinta-suave: #a9b6dd;
+    --azul: #8aa6ff;
+    --coral: #ff8a5c;
+    --vidro: rgba(16, 22, 58, 0.62);
+}
+ 
+/* Lua no lugar do sol */
+.noite .sol {
+    background:
+        radial-gradient(circle at 56% 62%, rgba(150, 162, 205, 0.55) 0 5%, transparent 6%),
+        radial-gradient(circle at 40% 40%, rgba(150, 162, 205, 0.45) 0 8%, transparent 9%),
+        radial-gradient(circle at 62% 38%, rgba(150, 162, 205, 0.4) 0 4%, transparent 5%),
+        radial-gradient(circle, #f4f6ff 0 40%, rgba(214, 222, 250, 0.35) 52%, rgba(214, 222, 250, 0) 71%);
+}
+ 
+/* Estrelas cintilando, sumindo perto do horizonte */
+.noite .ceu::before,
+.noite .ceu::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    -webkit-mask-image: linear-gradient(#000 35%, transparent 85%);
+    mask-image: linear-gradient(#000 35%, transparent 85%);
+}
+ 
+.noite .ceu::before {
+    background-image:
+        radial-gradient(circle 1.5px at 20px 30px, #fff 0, transparent 100%),
+        radial-gradient(circle 1px at 90px 70px, #dfe7ff 0, transparent 100%),
+        radial-gradient(circle 2px at 160px 20px, #fff 0, transparent 100%),
+        radial-gradient(circle 1px at 50px 130px, #fff 0, transparent 100%),
+        radial-gradient(circle 1.5px at 130px 110px, #cfd9ff 0, transparent 100%);
+    background-size: 220px 170px;
+    animation: cintilar 4s ease-in-out infinite alternate;
+}
+ 
+.noite .ceu::after {
+    background-image:
+        radial-gradient(circle 1px at 40px 60px, #fff 0, transparent 100%),
+        radial-gradient(circle 2px at 200px 120px, #fff 0, transparent 100%),
+        radial-gradient(circle 1.5px at 120px 200px, #dfe7ff 0, transparent 100%),
+        radial-gradient(circle 1px at 260px 40px, #fff 0, transparent 100%),
+        radial-gradient(circle 1px at 280px 230px, #cfd9ff 0, transparent 100%);
+    background-size: 310px 260px;
+    animation: cintilar 6s ease-in-out -2s infinite alternate;
+}
+ 
+.noite .nuvem {
+    background: rgba(125, 135, 205, 0.2);
+}
+ 
+.noite .divPrincipal {
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 40px 80px -24px rgba(0, 0, 10, 0.7);
+}
+ 
+.noite .inputCidade {
+    color: var(--tinta);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+ 
+.noite .inputCidade:focus {
+    box-shadow: 0 0 0 4px rgba(138, 166, 255, 0.3);
+}
+ 
+.noite .buscarCidade {
+    color: #0b1030;
+    background: var(--azul);
+}
+ 
+.noite .buscarCidade:hover {
+    background: #b3c5ff;
+    box-shadow: 0 10px 22px -8px rgba(138, 166, 255, 0.7);
+}
+ 
+.noite .listaCidades {
+    background: #161d4d;
+    box-shadow: 0 24px 50px -16px rgba(0, 0, 10, 0.8);
+}
+ 
+.noite .listaCidades button {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+ 
+.noite .listaCidades button:hover,
+.noite .listaCidades button:focus-visible {
+    background: rgba(138, 166, 255, 0.16);
+}
+ 
+.noite .detalhe {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+ 
+.noite .d-min { --cor: #7fb0ff; }
+.noite .d-umi { --cor: #4fd1e8; }
+.noite .d-chu { --cor: #a99bff; }
+ 
+.noite .divErroInput {
+    color: #0b1030;
+    background: #f1f4ff;
+}
+ 
+@keyframes cintilar {
+    from { opacity: 0.35; }
+    to   { opacity: 1; }
+}
+ 
+/* ---------- Responsivo e acessibilidade ---------- */
+@media (max-width: 420px) {
+    .buscarCidade { flex: 1 1 100%; }
+    .detalhe { padding: 0.8rem; column-gap: 0.65rem; }
+    .detalhe svg { width: 36px; height: 36px; padding: 8px; }
+}
+ 
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
